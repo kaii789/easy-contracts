@@ -1,0 +1,28 @@
+{
+  "name": "smart-contract",
+  "version": "0.0.1",
+  "description": "Smart contract package.",
+  "scripts": {
+    "start": "npm install"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.5",
+    "@nomiclabs/hardhat-waffle": "^2.0.2",
+    "chai": "^4.3.6",
+    "ethereum-waffle": "^3.4.0",
+    "ethers": "^5.5.4",
+    "hardhat": "^2.8.4"
+  },
+  "devDependenciesComments": {
+    "@nomiclabs/hardhat-ethers": "Hardhat plugin for integration with `ethers`",
+    "@nomiclabs/hardhat-vyper": "Hardhat plugin for Vyper support",
+    "@nomiclabs/hardhat-waffle": "Hardhat plugin for integration with `ethereum-waffle`",
+    "chai": "JavaScript assertion library",
+    "ethereum-waffle": "Ethereum testing framework",
+    "ethers": "Ethereum library and wallet implementation",
+    "hardhat": "Development framework to compile, deploy, test, and debug Ethereum software"
+  },
+  "dependencies": {
+    "@nomiclabs/hardhat-vyper": "^3.0.0"
+  }
+}
