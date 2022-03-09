@@ -26,5 +26,8 @@ module.exports = {
     hardhat: {
       chainId: 1337
     }
+  },
+  paths: {
+    artifacts: "../client/src/contract_artifacts"
   }
 };
