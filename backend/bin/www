@@ -1,0 +1,8 @@
+var app = require('../index');
+var port = process.env.PORT || 3000,
+    ip = process.env.IP || '0.0.0.0',
+    mongoURLLabel = "";
+
+app.listen(port, ip, function() {
+ console.log('running at ' + ip + ':' + port);
+});

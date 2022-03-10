@@ -1,0 +1,15 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "Backend for BlocX app.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
