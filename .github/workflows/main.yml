@@ -33,11 +33,12 @@ jobs:
       
       - run: pip install vyper
       
-      - name: Use Node.js 16.x
+      - name: Use Node.js 16
         uses: actions/setup-node@v2
         with:
-          node-version: "16.x"
+          node-version: "16"
           cache: 'npm'
+          cache-dependency-path: smart_contract/package-lock.json
       
       - run: cd smart_contract
       
