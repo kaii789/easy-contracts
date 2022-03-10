@@ -31,7 +31,8 @@ jobs:
         with:
           python-version: "3.10"
       
-      - run: pip install vyper
+      - name: Install vyper
+        run: pip install vyper
       
       - name: Use Node.js 16
         uses: actions/setup-node@v2
@@ -40,8 +41,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: smart_contract/package-lock.json
       
-      - run: cd smart_contract
+      - name: Install dependencies
+        run: npm install
+        working-directory: smart_contract
       
-      - run: npm start
-      
-      - run: npx hardhat test
+      - name: Run unit tests
+        run: npx hardhat test
+        working-directory: smart_contract
