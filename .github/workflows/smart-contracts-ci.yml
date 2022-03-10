@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    timeout-minutes: 20
+
 
     steps:
       - uses: actions/checkout@v2
