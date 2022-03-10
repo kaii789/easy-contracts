@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+echo "=== Building development container ==="
+docker build -t blocx-development-container .devcontainer/
+
+echo "=== Creating and starting development container ==="
+# This runs the development container in the background and keeps it running
+# so it is possible to do e.g. 
+# `docker exec -it blocx-development-container /bin/bash`
+# to get a shell into it.
+docker run \
+    --env HOST_PROJECT_ROOT=$(pwd) \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v $(pwd):/workspaces \
+    -p 8545:8545 \
+    --workdir="/workspaces" \
+    --name blocx-development-container \
+    --entrypoint /bin/bash \
+    -td \
+    blocx-development-container
+
+echo "=== Executing project setup script in development container ==="
+docker exec -it blocx-development-container /bin/bash bin/setup_dev.sh
