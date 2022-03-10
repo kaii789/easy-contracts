@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  # backend:
+  #   build:
+  #     context: 
+  #     dockerfile: Dockerfile
+  #   image: blocx_backend
+  #   container_name: blocx_backend
+  #   volumes:
+  #     - ${HOST_PROJECT_ROOT}/backend/:/var/app/backend/
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - app-network
+  
+  # datastore:
+  #   image: mongo
+  #   container_name: blocx-datastore
+  #   volumes:
+  #     - database:/data/db
+  #     - database-config:/data/configdb
+  #   ports:
+  #     - "27017:27017"
+  #   networks:
+  #     - app-network
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: blocx_client
+    container_name: blocx_client
+    # depends_on:
+    #   - backend
+    environment:
+      - CHOKIDAR_USEPOLLING=true # For React development server hot-reloading
+      - PORT=5001
+      - REACT_APP_CONTRACT_ACCOUNT=$CONTRACT_ACCOUNT
+    volumes:
+      # Bind mount client/ dir for development
+      - ${HOST_PROJECT_ROOT}/client/src:/var/app/client/src
+      - ${HOST_PROJECT_ROOT}/client/public:/var/app/client/public
+    ports:
+      - "5001:5001"
+    networks:
+      - app-network
+    stdin_open: true
+
+networks:
+    app-network:
+        driver: bridge
+
+volumes:
+  database:
+  database-config:
