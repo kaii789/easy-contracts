@@ -1,0 +1,15 @@
+{
+    "name": "blocx",
+    "version": "0.1.0",
+    "description": "Democratizing Smart Contracts",
+    "scripts": {
+        "heroku-prebuild": "cd backend && npm install",
+        "start": "cd backend && npm start",
+        "build": "cd client && npm install && npm run-script build"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dcsil/BlocX-Tech.git"
+    },
+    "dependencies": {}
+}

@@ -1,9 +1,27 @@
 const express = require('express')
 const path = require('path');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const routes = require('./routes/api');
 
 const app = express()
 const server = require('http').Server(app);
+
+/* Misc */
+app.use(bodyParser.json());
+app.use(cors());
+
+/* Datastore */
+let mongoURL = process.env.DB_URI;
+if (mongoURL === null || mongoURL === undefined) {
+    // Use localhost db.
+    mongoURL = 'mongodb://localhost:27017/blocx';
+}
+
+const mongoose = require('mongoose');
+mongoose.connect(mongoURL,{ useNewUrlParser: true, useUnifiedTopology: true})
+    .then(() => console.log("Database Connected Successfully"))
+    .catch(err => console.log(err));
 
 /* Routes */
 app.use('/api', routes);
