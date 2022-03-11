@@ -1,0 +1,21 @@
+tools:
+  exceptions: https://sentry.io/organizations/dcsil/projects/victims-of-rebalancing/?project=6144608
+  logging: https://...
+  ci:
+    frontend: https://github.com/dcsil/BlocX-Tech/actions/workflows/client-ci.yml
+    backend: https://github.com/dcsil/BlocX-Tech/actions/workflows/smart-contracts-ci.yml
+
+services:
+  production: https://blocx.herokuapp.com/
+  production_dashboard: https://dashboard.heroku.com/apps/blocx
+  staging: ...
+
+docs:
+  getting_started: https://github.com/dcsil/BlocX-Tech/blob/main/docs/development.md
+  
+commands:
+  bootstrap: bin/bootstrap
+  database:
+    create:
+    migrate:
+  server: backend/bin/www
