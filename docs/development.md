@@ -91,6 +91,11 @@ REACT_APP_CONTRACT_ACCOUNT=<smart contract account id> docker-compose up
 A React development server will be spun up in development mode to serve the front end at `localhost:5001`.
 Hot-reloading is supported; simply make your front end edits in your code editor and changes should be rendered automatically. 
 
+A local express server will also be spun up at localhost:3000 and connected to a MongoDB database. To develop on the backend, you would need to restart the express server container to see changes:
+```
+docker-compose restart backend
+```
+
 If new packages are installed, you would need to rebuild the container images:
 ```
 docker-compose build
