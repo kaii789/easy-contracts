@@ -1,14 +1,13 @@
 tools:
   exceptions: https://sentry.io/organizations/dcsil/projects/victims-of-rebalancing/?project=6144608
-  logging: https://...
+  logging: https://service.us2.sumologic.com/ui/?appName=blocx&addonId=sumologic
   ci:
     frontend: https://github.com/dcsil/BlocX-Tech/actions/workflows/client-ci.yml
-    backend: https://github.com/dcsil/BlocX-Tech/actions/workflows/smart-contracts-ci.yml
+    smart_contract: https://github.com/dcsil/BlocX-Tech/actions/workflows/smart-contracts-ci.yml
 
 services:
   production: https://blocx.herokuapp.com/
   production_dashboard: https://dashboard.heroku.com/apps/blocx
-  staging: ...
 
 docs:
   getting_started: https://github.com/dcsil/BlocX-Tech/blob/main/docs/development.md
@@ -16,9 +15,9 @@ docs:
 commands:
   bootstrap: bin/bootstrap
   database:
-    create:
-    migrate:
-  server: backend/bin/www
+    create: docker-compose up datastore
+    delete: docker-compose down -v
+  server: docker-compose up backend
   test:
     frontend: cd ./client && npm test
     backend: cd ./smart_contract && npx hardhat test
