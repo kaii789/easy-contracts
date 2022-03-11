@@ -15,7 +15,7 @@ app.use(cors());
 let mongoURL = process.env.DB_URI;
 if (mongoURL === null || mongoURL === undefined) {
     // Use localhost db.
-    mongoURL = 'mongodb://localhost:27017/blocx';
+    mongoURL = 'mongodb://blocx-datastore:27017/blocx';
 }
 
 const mongoose = require('mongoose');
