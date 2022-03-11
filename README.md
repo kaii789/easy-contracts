@@ -2,6 +2,8 @@
 
 This is the technical repository for BlocX. The primary Team Repository can be found [here](https://github.com/dcsil/BlocX).
 
+To get started with Development, please check the [Development doc](https://github.com/dcsil/BlocX-Tech/blob/main/docs/development.md).
+
 Table of Contents
 ---
 - [High-Level Architecture](#high-level-architecture)
