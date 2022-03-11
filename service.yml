@@ -19,3 +19,6 @@ commands:
     create:
     migrate:
   server: backend/bin/www
+  test:
+    frontend: cd ./client && npm test
+    backend: cd ./smart_contract && npx hardhat test
