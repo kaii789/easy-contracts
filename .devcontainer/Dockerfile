@@ -21,5 +21,8 @@ RUN curl -sSL "https://github.com/docker/compose/releases/download/v2.2.3/docker
 # vyper: Vyper compiler
 RUN pip install vyper
 
+# Install Heroku CLI.
+RUN curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+
 # Install global node modules (locally). This way, we don't need a `devDependencies` field in `package.json`.
 # RUN su node -c "npm install -g <foobar>"
