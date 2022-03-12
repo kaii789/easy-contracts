@@ -1,11 +1,19 @@
-const express = require('express')
+const express = require('express');
+const Sentry = require('@sentry/node');
 const path = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const routes = require('./routes/api');
 
-const app = express()
+const app = express();
 const server = require('http').Server(app);
+
+
+Sentry.init({ dsn: process.env.SENTRY_DSN });
+
+// The request handler must be the first middleware on the app
+app.use(Sentry.Handlers.requestHandler());
+
 
 /* Misc */
 app.use(bodyParser.json());
@@ -31,5 +39,9 @@ app.use(express.static(path.join(__dirname, './build')));
 app.get(['/*'], function (req, res) {
     res.sendFile(path.join(__dirname, './build', 'index.html'));
 });
+
+
+// The error handler must be before any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
 
 module.exports = server;
