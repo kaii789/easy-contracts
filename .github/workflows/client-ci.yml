@@ -22,9 +22,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Install dependencies
+      - name: Install client dependencies
         run: npm install
         working-directory: client
+
+      - name: Install smart_contract dependencies
+        run: npm install
+        working-directory: smart_contract
+
+      - name: Build contract artifacts
+        run: npx hardhat compile
+        working-directory: smart_contract
 
       - name: Run unit tests
         run: npm test -- --watchAll=false
