@@ -18,10 +18,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.4",
-  vyper: {
-    version: "0.3.1",
-  },
+  solidity: "0.8.9",
   networks: {
     hardhat: {
       chainId: 1337
