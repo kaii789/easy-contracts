@@ -4,12 +4,12 @@ pragma solidity 0.8.9;
 contract ContractState {
     struct Action {
         uint8 id;
-        string args;
+        string[] args;
     }
 
     struct Condition {
         uint8 id;
-        string args;
+        string[] args;
 	}
 
     struct Statement {
@@ -50,9 +50,9 @@ contract ContractState {
     }
 
     function addStatement(string calldata contractName,
-                          Condition[] calldata conditions,
-                          Action[] calldata consequents,
-                          Action[] calldata alternatives) public returns(bool success) {
+                          Condition[] memory conditions,
+                          Action[] memory consequents,
+                          Action[] memory alternatives) public returns(bool success) {
         // Assert contract exists.
         require(isContract(contractName), "Contract does not exist");
 

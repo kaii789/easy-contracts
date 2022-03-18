@@ -13,12 +13,12 @@ describe("Create contract", function () {
     await createContractTx.wait(); // Wait until transaction is mined.
     const addStatementTx = await contractState.addStatement(
       "contract_0",
-      [{"id": 0, "args": "< 4"}],
-      [{"id": 0, "args": "1"}],
-      [{"id": 1, "args": "0"}]
+      [{"id": 0, "args": ["<", "4"]}],
+      [{"id": 0, "args": ["1"]}],
+      [{"id": 1, "args": ["user1"]}]
     );
     await addStatementTx.wait(); // Wait until transaction is mined.
-
+    
     // Get contract.
     const getContractTx = await contractState.getContract("contract_0");
     expect(getContractTx.isContract).to.be.true;
@@ -27,8 +27,9 @@ describe("Create contract", function () {
     expect(getContractTx.statements[0].numConsequents).to.equal(1);
     expect(getContractTx.statements[0].numAlternatives).to.equal(1);
     expect(getContractTx.statements[0].conditions[0].id).to.equal(0);
-    expect(getContractTx.statements[0].conditions[0].args).to.equal("< 4");
-    expect(getContractTx.statements[0].alternatives[0].id).to.equal(1);
-    expect(getContractTx.statements[0].alternatives[0].args).to.equal("0");
+    // `.eql()`: deep compare xref: https://github.com/chaijs/deep-eql
+    expect(getContractTx.statements[0].conditions[0].args).to.eql(['<', '4']);
+    expect(getContractTx.statements[0].alternatives[0].id).to.eql(1);
+    expect(getContractTx.statements[0].alternatives[0].args).to.eql(['user1']);
   });
 });
