@@ -43,6 +43,12 @@ contract ContractState {
         return true;
     }
 
+    function getContract(string calldata name) public view returns(Contract memory) {
+        // Assert contract exists.
+        require(isContract(name), "Contract does not exist");
+        return contractStructs[name];
+    }
+
     function addStatement(string calldata contractName,
                           Condition[] calldata conditions,
                           Action[] calldata consequents,
