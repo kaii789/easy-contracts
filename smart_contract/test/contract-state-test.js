@@ -4,7 +4,7 @@ const { ethers } = require("hardhat");
 describe("Create contract", function () {
   it("Should successfully create a contract", async function () {
     // Deploy Contract.
-    const ContractState = await ethers.getContractFactory("ContractState");
+    const ContractState = await ethers.getContractFactory("Linker");
     const contractState = await ContractState.deploy();
     await contractState.deployed();
 
@@ -25,7 +25,7 @@ describe("Create contract", function () {
 describe("Add statement", function () {
   it("Should successfully add statements to a contract", async function () {
     // Deploy Contract.
-    const ContractState = await ethers.getContractFactory("ContractState");
+    const ContractState = await ethers.getContractFactory("Linker");
     const contractState = await ContractState.deploy();
     await contractState.deployed();
 
