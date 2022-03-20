@@ -29,6 +29,9 @@ contract ContractState {
         uint8 curStatement;
     }
 
+    // A mapping from contract_name => sender => amount paid.
+    mapping(string => mapping(address => uint)) public payerBalance;
+
     // A mapping to `Contract` structs.
     mapping(string => Contract) private contractStructs;
 
@@ -36,14 +39,13 @@ contract ContractState {
         return contractStructs[name].isContract;
     }
 
-    function newContract(string calldata name) public returns(bool success) {
+    function newContract(string calldata name) external returns(bool success) {
         require(!isContract(name), "Contract with name already exists"); // Make sure contract with name doesn't already exist.
         contractStructs[name].isContract = true;
-        contractStructs[name].balance = 0;
         return true;
     }
 
-    function getContract(string calldata name) public view returns(Contract memory) {
+    function getContract(string calldata name) external view returns(Contract memory) {
         // Assert contract exists.
         require(isContract(name), "Contract does not exist");
         return contractStructs[name];
@@ -52,7 +54,7 @@ contract ContractState {
     function addStatement(string calldata contractName,
                           Condition[] memory conditions,
                           Action[] memory consequents,
-                          Action[] memory alternatives) public returns(bool success) {
+                          Action[] memory alternatives) external returns(bool success) {
         // Assert contract exists.
         require(isContract(contractName), "Contract does not exist");
 
@@ -87,5 +89,14 @@ contract ContractState {
         contractStructs[contractName].numStatements++;
         
         return true;
+    }
+
+    function payContract(string calldata contractName) external payable {
+        // Assert contract exists.
+        require(isContract(contractName), "Contract does not exist");
+        Contract storage contractToPay = contractStructs[contractName];
+
+        contractToPay.balance += msg.value;
+        payerBalance[contractName][msg.sender] += msg.value;
     }
 }
