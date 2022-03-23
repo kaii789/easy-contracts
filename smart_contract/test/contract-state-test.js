@@ -21,7 +21,7 @@ describe("Test contract state", function () {
     // which in this case is Hardhat Network.
     [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
 
-    // To deploy our contract, we just have to call Token.deploy() and await
+    // To deploy our contract, we just have to call ContractState.deploy() and await
     // for it to be deployed(), which happens once its transaction has been
     // mined.
     contractState = await ContractState.deploy();
@@ -52,16 +52,17 @@ describe("Test contract state", function () {
       // Add statements.
       const addStatementTx1 = await contractState.addStatement(
         "contract_0",
-        [{"id": 0, "args": ["<", "4"]}],
-        [{"id": 0, "args": ["1"]}],
-        [{"id": 1, "args": ["user1"]}]
+        [{"conditionType": 0, "strArgs": ["<"], "intArgs": [1], "addrArgs": []}],
+        [{"actionType": 0, "strArgs": [">="], "intArgs": [2], "addrArgs": []}],
+        [{"actionType": 1, "strArgs": ["<"], "intArgs": [5], "addrArgs": [addr1.address]}]
       );
       await addStatementTx1.wait(); // Wait until transaction is mined.
       const addStatementTx2 = await contractState.addStatement(
         "contract_0",
-        [{"id": 0, "args": [">=", "324"]}],
-        [{"id": 2, "args": ["bar"]}],
-        [{"id": 3, "args": ["foo"]}, {"id": 4, "args": ["baz", "moo"]}]
+        [{"conditionType": 0, "strArgs": ["<="], "intArgs": [1], "addrArgs": []}],
+        [{"actionType": 0, "strArgs": [">"], "intArgs": [2], "addrArgs": []}],
+        [{"actionType": 1, "strArgs": ["<"], "intArgs": [5], "addrArgs": [addr2.address]},
+         {"actionType": 1, "strArgs": [">="], "intArgs": [3], "addrArgs": [addr1.address]}]
       );
       await addStatementTx2.wait(); // Wait until transaction is mined.
       
@@ -72,12 +73,15 @@ describe("Test contract state", function () {
       expect(getContractTx.statements[0].numConditions).to.equal(1);
       expect(getContractTx.statements[0].numConsequents).to.equal(1);
       expect(getContractTx.statements[0].numAlternatives).to.equal(1);
-      expect(getContractTx.statements[0].conditions[0].id).to.equal(0);
+      expect(getContractTx.statements[1].numAlternatives).to.equal(2);
+      expect(getContractTx.statements[0].conditions[0].conditionType).to.equal(0);
+      expect(getContractTx.statements[0].alternatives[0].actionType).to.equal(1);
       // `.eql()`: deep compare xref: https://github.com/chaijs/deep-eql
-      expect(getContractTx.statements[0].conditions[0].args).to.eql(['<', '4']);
-      expect(getContractTx.statements[0].alternatives[0].id).to.eql(1);
-      expect(getContractTx.statements[0].alternatives[0].args).to.eql(['user1']);
-      expect(getContractTx.statements[1].alternatives[1].args).to.eql(['baz', 'moo']);
+      expect(getContractTx.statements[0].conditions[0].strArgs).to.eql(['<']);
+      expect(getContractTx.statements[0].alternatives[0].actionType).to.eql(1);
+      expect(getContractTx.statements[1].alternatives[0].addrArgs).to.eql([addr2.address]);
+      // NB: need to use "BigNumber" here because the Ethereum type is `uint256` (too big for JavaScript).
+      expect(getContractTx.statements[1].alternatives[1].intArgs).to.eql([ethers.BigNumber.from(3)]); 
     });
   });
 

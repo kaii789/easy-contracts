@@ -3,14 +3,27 @@ pragma solidity 0.8.9;
 
 contract ContractState {
     struct Action {
-        uint8 id;
-        string[] args;
+        uint8 actionType;
+        string[] strArgs;
+        uint256[] intArgs;
+        address[] addrArgs;
     }
 
+    // Map conditionType to total length of arguments expected for that condtionType.
+    mapping(uint8 => uint8) internal conditionArgNum;
+
     struct Condition {
-        uint8 id;
-        string[] args;
+        uint8 conditionType;
+        string[] strArgs;
+        uint256[] intArgs;
+        address[] addrArgs;
 	}
+
+    // Use `constructor` function to initialize `conditionArgNum` mapping.
+    constructor() {
+        conditionArgNum[0] = 2;
+        conditionArgNum[1] = 3;
+    }
 
     struct Statement {
         Condition[10] conditions;
@@ -33,7 +46,7 @@ contract ContractState {
     mapping(string => mapping(address => uint)) public payerBalance;
 
     // A mapping to `Contract` structs.
-    mapping(string => Contract) private contractStructs;
+    mapping(string => Contract) internal contractStructs;
 
     function isContract(string calldata name) private view returns(bool) {
         return contractStructs[name].isContract;
@@ -61,28 +74,36 @@ contract ContractState {
         uint8 statementIndex = contractStructs[contractName].numStatements;
         require(statementIndex < 10, "Too many statements");
 
-        // Add conditions. 
+        // Add conditions.
         for (uint i = 0; i < conditions.length; i++) {
             uint8 conditionIndex = contractStructs[contractName].statements[statementIndex].numConditions;
             require(conditionIndex < 10, "Too many conditions");
-            contractStructs[contractName].statements[statementIndex].conditions[conditionIndex].id = conditions[i].id;
-            contractStructs[contractName].statements[statementIndex].conditions[conditionIndex].args = conditions[i].args;
+            uint totArgLen = conditions[i].strArgs.length + conditions[i].intArgs.length + conditions[i].addrArgs.length;
+            require(totArgLen == conditionArgNum[conditions[i].conditionType], "Incorrect number of args for condition");
+            contractStructs[contractName].statements[statementIndex].conditions[conditionIndex].conditionType = conditions[i].conditionType;
+            contractStructs[contractName].statements[statementIndex].conditions[conditionIndex].strArgs = conditions[i].strArgs;
+            contractStructs[contractName].statements[statementIndex].conditions[conditionIndex].intArgs = conditions[i].intArgs;
+            contractStructs[contractName].statements[statementIndex].conditions[conditionIndex].addrArgs = conditions[i].addrArgs;
             contractStructs[contractName].statements[statementIndex].numConditions++;
         }
         // Add consequents.
         for (uint i = 0; i < consequents.length; i++) {
             uint8 consequentIndex = contractStructs[contractName].statements[statementIndex].numConsequents;
             require(consequentIndex < 10, "Too many consequents");
-            contractStructs[contractName].statements[statementIndex].consequents[consequentIndex].id = consequents[i].id;
-            contractStructs[contractName].statements[statementIndex].consequents[consequentIndex].args = consequents[i].args;
+            contractStructs[contractName].statements[statementIndex].consequents[consequentIndex].actionType = consequents[i].actionType;
+            contractStructs[contractName].statements[statementIndex].consequents[consequentIndex].strArgs = consequents[i].strArgs;
+            contractStructs[contractName].statements[statementIndex].consequents[consequentIndex].intArgs = consequents[i].intArgs;
+            contractStructs[contractName].statements[statementIndex].consequents[consequentIndex].addrArgs = consequents[i].addrArgs;
             contractStructs[contractName].statements[statementIndex].numConsequents++;
         }
         // Add alternatives.
         for (uint i = 0; i < alternatives.length; i++) {
             uint8 alternativesIndex = contractStructs[contractName].statements[statementIndex].numAlternatives;
             require(alternativesIndex < 10, "Too many alternatives");
-            contractStructs[contractName].statements[statementIndex].alternatives[alternativesIndex].id = alternatives[i].id;
-            contractStructs[contractName].statements[statementIndex].alternatives[alternativesIndex].args = alternatives[i].args;
+            contractStructs[contractName].statements[statementIndex].alternatives[alternativesIndex].actionType = alternatives[i].actionType;
+            contractStructs[contractName].statements[statementIndex].alternatives[alternativesIndex].strArgs = alternatives[i].strArgs;
+            contractStructs[contractName].statements[statementIndex].alternatives[alternativesIndex].intArgs = alternatives[i].intArgs;
+            contractStructs[contractName].statements[statementIndex].alternatives[alternativesIndex].addrArgs = alternatives[i].addrArgs;
             contractStructs[contractName].statements[statementIndex].numAlternatives++;
         }
 
