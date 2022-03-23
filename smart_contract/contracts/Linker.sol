@@ -2,7 +2,8 @@
 pragma solidity 0.8.9;
 
 import "./ContractState.sol";
+import "./Condition.sol";
 
-contract Linker is ContractState {
+contract Linker is ContractState, ConditionExecutor {
     
 }
