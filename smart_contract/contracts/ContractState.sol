@@ -12,6 +12,9 @@ contract ContractState {
     // Map conditionType to total length of arguments expected for that condtionType.
     mapping(uint8 => uint8) internal conditionArgNum;
 
+    // Map actionType to total length of arguments expected for that actionType.
+    mapping(uint8 => uint8) internal actionArgNum;
+
     struct Condition {
         uint8 conditionType;
         string[] strArgs;
@@ -19,12 +22,17 @@ contract ContractState {
         address[] addrArgs;
 	}
 
-    // Use `constructor` function to initialize `conditionArgNum` mapping.
+    // Use `constructor` function to initialize `conditionArgNum` and `actionArgNum` mapping.
     constructor() {
         conditionArgNum[0] = 2;
         conditionArgNum[1] = 3;
+        actionArgNum[0] = 1;
+        
+        // For testing purposes
+        actionArgNum[200] = 2;
+        actionArgNum[201] = 3;
     }
-
+    
     struct Statement {
         Condition[10] conditions;
         Action[10] consequents;
@@ -39,7 +47,7 @@ contract ContractState {
         uint256 balance;
         Statement[10] statements;
         uint8 numStatements;
-        uint8 curStatement;
+        int8 curStatement;
     }
 
     // A mapping from contract_name => sender => amount paid.
@@ -90,6 +98,8 @@ contract ContractState {
         for (uint i = 0; i < consequents.length; i++) {
             uint8 consequentIndex = contractStructs[contractName].statements[statementIndex].numConsequents;
             require(consequentIndex < 10, "Too many consequents");
+            uint totArgLen = consequents[i].strArgs.length + consequents[i].intArgs.length + consequents[i].addrArgs.length;
+            require(totArgLen == actionArgNum[consequents[i].actionType], "Incorrect number of args for action");
             contractStructs[contractName].statements[statementIndex].consequents[consequentIndex].actionType = consequents[i].actionType;
             contractStructs[contractName].statements[statementIndex].consequents[consequentIndex].strArgs = consequents[i].strArgs;
             contractStructs[contractName].statements[statementIndex].consequents[consequentIndex].intArgs = consequents[i].intArgs;
@@ -100,6 +110,8 @@ contract ContractState {
         for (uint i = 0; i < alternatives.length; i++) {
             uint8 alternativesIndex = contractStructs[contractName].statements[statementIndex].numAlternatives;
             require(alternativesIndex < 10, "Too many alternatives");
+            uint totArgLen = alternatives[i].strArgs.length + alternatives[i].intArgs.length + alternatives[i].addrArgs.length;
+            require(totArgLen == actionArgNum[alternatives[i].actionType], "Incorrect number of args for action");
             contractStructs[contractName].statements[statementIndex].alternatives[alternativesIndex].actionType = alternatives[i].actionType;
             contractStructs[contractName].statements[statementIndex].alternatives[alternativesIndex].strArgs = alternatives[i].strArgs;
             contractStructs[contractName].statements[statementIndex].alternatives[alternativesIndex].intArgs = alternatives[i].intArgs;

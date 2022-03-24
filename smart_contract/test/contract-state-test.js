@@ -53,16 +53,16 @@ describe("Test contract state", function () {
       const addStatementTx1 = await contractState.addStatement(
         "contract_0",
         [{"conditionType": 0, "strArgs": ["<"], "intArgs": [1], "addrArgs": []}],
-        [{"actionType": 0, "strArgs": [">="], "intArgs": [2], "addrArgs": []}],
-        [{"actionType": 1, "strArgs": ["<"], "intArgs": [5], "addrArgs": [addr1.address]}]
+        [{"actionType": 200, "strArgs": [">="], "intArgs": [2], "addrArgs": []}],
+        [{"actionType": 201, "strArgs": ["<"], "intArgs": [5], "addrArgs": [addr1.address]}]
       );
       await addStatementTx1.wait(); // Wait until transaction is mined.
       const addStatementTx2 = await contractState.addStatement(
         "contract_0",
         [{"conditionType": 0, "strArgs": ["<="], "intArgs": [1], "addrArgs": []}],
-        [{"actionType": 0, "strArgs": [">"], "intArgs": [2], "addrArgs": []}],
-        [{"actionType": 1, "strArgs": ["<"], "intArgs": [5], "addrArgs": [addr2.address]},
-         {"actionType": 1, "strArgs": [">="], "intArgs": [3], "addrArgs": [addr1.address]}]
+        [{"actionType": 200, "strArgs": [">"], "intArgs": [2], "addrArgs": []}],
+        [{"actionType": 201, "strArgs": ["<"], "intArgs": [5], "addrArgs": [addr2.address]},
+         {"actionType": 201, "strArgs": [">="], "intArgs": [3], "addrArgs": [addr1.address]}]
       );
       await addStatementTx2.wait(); // Wait until transaction is mined.
       
@@ -75,10 +75,10 @@ describe("Test contract state", function () {
       expect(getContractTx.statements[0].numAlternatives).to.equal(1);
       expect(getContractTx.statements[1].numAlternatives).to.equal(2);
       expect(getContractTx.statements[0].conditions[0].conditionType).to.equal(0);
-      expect(getContractTx.statements[0].alternatives[0].actionType).to.equal(1);
+      expect(getContractTx.statements[0].alternatives[0].actionType).to.equal(201);
       // `.eql()`: deep compare xref: https://github.com/chaijs/deep-eql
       expect(getContractTx.statements[0].conditions[0].strArgs).to.eql(['<']);
-      expect(getContractTx.statements[0].alternatives[0].actionType).to.eql(1);
+      expect(getContractTx.statements[0].alternatives[0].actionType).to.eql(201);
       expect(getContractTx.statements[1].alternatives[0].addrArgs).to.eql([addr2.address]);
       // NB: need to use "BigNumber" here because the Ethereum type is `uint256` (too big for JavaScript).
       expect(getContractTx.statements[1].alternatives[1].intArgs).to.eql([ethers.BigNumber.from(3)]); 

@@ -5,7 +5,20 @@ import "./ContractState.sol";
 import "./Utilities.sol";
 
 contract ConditionExecutor is ContractState, Utilities {
-    function judgeCondition(string storage contractName, Condition storage condition) private view returns(bool) {
+    function judgeAllConditions(string calldata contractName) internal view returns(bool) {
+        Contract storage ct = contractStructs[contractName];
+        Statement storage st = ct.statements[uint256(int(ct.curStatement))];
+        
+        for (uint i = 0; i < st.numConditions; i++) {
+            if (!judgeCondition(contractName, st.conditions[i])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    function judgeCondition(string calldata contractName, Condition storage condition) private view returns(bool) {
         if (condition.conditionType == 0) {
             return judgeContractBalance(contractName, condition);
         } else if (condition.conditionType == 1) {
@@ -16,7 +29,7 @@ contract ConditionExecutor is ContractState, Utilities {
         }
     }
 
-    function judgeContractBalance(string storage contractName, Condition storage condition) private view returns(bool) {
+    function judgeContractBalance(string calldata contractName, Condition storage condition) private view returns(bool) {
         bytes32 inequality = keccak256(bytes(condition.strArgs[0]));
 
         if (inequality == lessThan) {
@@ -31,7 +44,7 @@ contract ConditionExecutor is ContractState, Utilities {
         }
     }
 
-    function judgeUserBalance(string storage contractName, Condition storage condition) private view returns(bool) {
+    function judgeUserBalance(string calldata contractName, Condition storage condition) private view returns(bool) {
         address userAddress = condition.addrArgs[0];
         uint256 userBalance = payerBalance[contractName][userAddress];
         bytes32 inequality = keccak256(bytes(condition.strArgs[0]));
