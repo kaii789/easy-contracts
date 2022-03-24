@@ -9,6 +9,8 @@ services:
     container_name: blocx_backend
     depends_on:
       - datastore
+    environment:
+      - DEV_ENV=true
     volumes:
       - ${HOST_PROJECT_ROOT}/backend/:/var/app/backend/
       - /var/app/backend/node_modules/ # this essentially ignores `node_modules/`

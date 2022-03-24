@@ -35,10 +35,12 @@ mongoose.connect(mongoURL,{ useNewUrlParser: true, useUnifiedTopology: true})
 app.use('/api', routes);
 
 /* Serve React app */
-app.use(express.static(path.join(__dirname, './build')));
-app.get(['/*'], function (req, res) {
-    res.sendFile(path.join(__dirname, './build', 'index.html'));
-});
+if (process.env.DEV_ENV == null || !process.env.DEV_ENV) {
+    app.use(express.static(path.join(__dirname, './build')));
+    app.get(['/*'], function (req, res) {
+        res.sendFile(path.join(__dirname, './build', 'index.html'));
+    });
+}
 
 
 // The error handler must be before any other error middleware and after all controllers
