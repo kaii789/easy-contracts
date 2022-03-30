@@ -11,7 +11,8 @@
     "chai": "^4.3.6",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.4",
-    "hardhat": "^2.8.4"
+    "hardhat": "^2.8.4",
+    "solidity-coverage": "^0.7.20"
   },
   "devDependenciesComments": {
     "@nomiclabs/hardhat-ethers": "Hardhat plugin for integration with `ethers`",
