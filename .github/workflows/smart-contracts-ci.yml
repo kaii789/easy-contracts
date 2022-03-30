@@ -22,14 +22,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.10"
-      
-      - name: Install vyper
-        run: pip install vyper
-      
       - name: Use Node.js 16
         uses: actions/setup-node@v2
         with:
@@ -42,5 +34,14 @@ jobs:
         working-directory: smart_contract
       
       - name: Run unit tests
-        run: npx hardhat test
+        run: npx hardhat coverage
         working-directory: smart_contract
+
+      # Upload test code coverage to CodeClimate
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: 5192b38f8154db1e60c646e8f74060d0a15abde1ced66e4b7cbdbdcd9ffadc31
+        with:
+          coverageLocations: |
+            ${{github.workspace}}/smart_contract/coverage/lcov.info:lcov
