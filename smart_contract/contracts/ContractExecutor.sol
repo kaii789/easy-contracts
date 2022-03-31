@@ -3,22 +3,21 @@ pragma solidity 0.8.9;
 
 import "./Condition.sol";
 import "./ContractState.sol";
-import "hardhat/console.sol";
-// import "./Utilities.sol";
+// import "hardhat/console.sol";
 
 contract ContractExecutor is ContractState, ConditionExecutor {
     function executeContract(string calldata contractName) public {
         // This will be called by the client
         
         Contract storage ct = contractStructs[contractName];
-        ct.curStatement = executeStatement(contractName);
+        executeStatement(contractName);
 
         if (ct.curStatement == -1) {
             // TODO: End contract
         }
     }
 
-    function executeStatement(string calldata contractName) private returns(int8) {
+    function executeStatement(string calldata contractName) private{
         Contract storage ct = contractStructs[contractName];
         Statement storage st = ct.statements[uint256(int(ct.curStatement))];
         
@@ -40,23 +39,18 @@ contract ContractExecutor is ContractState, ConditionExecutor {
             
             if (atype == 0) {
                 // Jump
-                int8 nextStatementID = int8(int(action.intArgs[0]));
-                return nextStatementID;
+                ct.curStatement = int8(int(action.intArgs[0]));
             } else if (atype == 1) {
                 address to = action.addrArgs[0];
-                uint256 amount = action.intArgs[0];
+                uint256 amount = uint256(action.intArgs[0]);
                 payUser(contractName, to, amount);
             } else if (atype == 2) {
                 address to = action.addrArgs[0];
                 payUserEntireBalance(contractName, to);
             } else if (atype == 3) {
                 refundAll(contractName);
-            } else {
-                // Something's wrong!
             }
         }
-
-        return -1; // No jump, so contract is done
     }
 
     function payUser(string calldata contractName, address to, uint256 amount) private {

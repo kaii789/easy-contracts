@@ -55,7 +55,7 @@ describe("Test contract executor", function () {
           [{"conditionType": 0, "strArgs": [">"], "intArgs": [0], "addrArgs": []},
            {"conditionType": 0, "strArgs": ["<"], "intArgs": [0], "addrArgs": []}],
           [{"actionType": 0, "strArgs": [], "intArgs": [0], "addrArgs": []}],
-          []
+          [{"actionType": 0, "strArgs": [], "intArgs": [-1], "addrArgs": []}]
         );
         await addStatementTx2.wait(); // Wait until transaction is mined.
         
@@ -167,7 +167,7 @@ describe("Test contract executor", function () {
         const addStatementTx2 = await contractState.addStatement(
           "contract_0",
           [{"conditionType": 0, "strArgs": ["<="], "intArgs": [0], "addrArgs": []}],
-          [],
+          [{"actionType": 0, "strArgs": [], "intArgs": [-1], "addrArgs": []}],
           [{"actionType": 0, "strArgs": [], "intArgs": [1], "addrArgs": []}]
         );
         await addStatementTx2.wait(); // Wait until transaction is mined.
@@ -224,7 +224,7 @@ describe("Test contract executor", function () {
         const addStatementTx2 = await contractState.addStatement(
           "contract_0",
           [{"conditionType": 0, "strArgs": ["<="], "intArgs": [0], "addrArgs": []}],
-          [],
+          [{"actionType": 0, "strArgs": [], "intArgs": [-1], "addrArgs": []}],
           [{"actionType": 0, "strArgs": [], "intArgs": [1], "addrArgs": []}]
         );
         await addStatementTx2.wait(); // Wait until transaction is mined.
