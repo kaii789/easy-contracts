@@ -5,7 +5,7 @@ contract ContractState {
     struct Action {
         uint8 actionType;
         string[] strArgs;
-        uint256[] intArgs;
+        int256[] intArgs;
         address[] addrArgs;
     }
 
@@ -18,7 +18,7 @@ contract ContractState {
     struct Condition {
         uint8 conditionType;
         string[] strArgs;
-        uint256[] intArgs;
+        int256[] intArgs;
         address[] addrArgs;
 	}
 
@@ -26,6 +26,7 @@ contract ContractState {
     constructor() {
         conditionArgNum[0] = 2;
         conditionArgNum[1] = 3;
+        conditionArgNum[2] = 1;
         actionArgNum[0] = 1;
         actionArgNum[1] = 2;
         actionArgNum[2] = 1;
@@ -52,6 +53,9 @@ contract ContractState {
         uint8 numStatements;
         int8 curStatement;
     }
+
+    // A mapping from contract_name => sender => bool.
+    mapping(string => mapping(address => bool)) public userConfirmation;
 
     // A mapping from contract_name => sender => amount paid.
     mapping(string => mapping(address => uint)) public payerBalance;
@@ -129,6 +133,20 @@ contract ContractState {
         contractStructs[contractName].numStatements++;
         
         return true;
+    }
+
+    function userConfirm(string calldata contractName) external {
+        require(isContract(contractName), "Contract does not exit");
+
+        require(userConfirmation[contractName][msg.sender] == false, "User already confirmed");
+        userConfirmation[contractName][msg.sender] = true;
+    }
+
+    function userDeny(string calldata contractName) external {
+        require(isContract(contractName), "Contract does not exit");
+
+        require(userConfirmation[contractName][msg.sender] == true, "User has not confirmed yet");
+        userConfirmation[contractName][msg.sender] = false;
     }
 
     function payContract(string calldata contractName) external payable {
