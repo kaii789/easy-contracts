@@ -20,4 +20,4 @@ docker run \
     blocx-development-container
 
 echo "=== Executing project setup script in development container ==="
-docker exec -it blocx-development-container /bin/bash bin/setup_dev.sh
+docker exec -i blocx-development-container /bin/bash bin/setup_dev.sh
