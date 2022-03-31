@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+docker stop $(docker ps -q --filter name="blocx*")
+docker rm $(docker ps -a -q --filter name="blocx*")

@@ -38,6 +38,10 @@ docker exec -it blocx-development-container /bin/bash
 
 NOTE: steps 1 and 2 essentially contain all the commands necessary for the "Setup" part of the [suggested workflow](#suggested-workflow).
 
+### `bin/teardown`
+
+This script stops and removes all `blocs`-related containers. Run this script from your host (i.e. _not_ inside the development container).
+
 ### `bin/setup.sh`
 
 This script essentially automates commands that a developer would run to bring everything up.
