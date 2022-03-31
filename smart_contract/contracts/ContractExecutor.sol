@@ -3,6 +3,7 @@ pragma solidity 0.8.9;
 
 import "./Condition.sol";
 import "./ContractState.sol";
+import "hardhat/console.sol";
 // import "./Utilities.sol";
 
 contract ContractExecutor is ContractState, ConditionExecutor {
@@ -37,15 +38,63 @@ contract ContractExecutor is ContractState, ConditionExecutor {
             action = actions[i];
             atype = action.actionType;
             
-            // TODO: Add support for more action types
             if (atype == 0) {
+                // Jump
                 int8 nextStatementID = int8(int(action.intArgs[0]));
                 return nextStatementID;
+            } else if (atype == 1) {
+                address to = action.addrArgs[0];
+                uint256 amount = action.intArgs[0];
+                payUser(contractName, to, amount);
+            } else if (atype == 2) {
+                address to = action.addrArgs[0];
+                payUserEntireBalance(contractName, to);
+            } else if (atype == 3) {
+                refundAll(contractName);
             } else {
                 // Something's wrong!
             }
         }
 
         return -1; // No jump, so contract is done
+    }
+
+    function payUser(string calldata contractName, address to, uint256 amount) private {
+        Contract storage ct = contractStructs[contractName];
+        require(ct.balance >= amount);
+        
+        address payable receiver = payable(to);
+        receiver.transfer(amount);
+        ct.balance -= amount;
+    }
+
+    function payUserEntireBalance(string calldata contractName, address to) private {
+        Contract storage ct = contractStructs[contractName];
+        address payable receiver = payable(to);
+        receiver.transfer(ct.balance);
+        ct.balance = 0;
+    }
+
+    function refundAll(string calldata contractName) private {
+        Contract storage ct = contractStructs[contractName];
+        uint numAddresses = contractToAddresses[contractName].length;
+
+        uint256 refundAmount = 0;
+        for (uint i = 0; i < numAddresses; i++) {
+            address to = contractToAddresses[contractName][i];
+            refundAmount += payerBalance[contractName][to];
+        }
+
+        require(ct.balance >= refundAmount);
+        
+        for (uint i = 0; i < numAddresses; i++) {
+            address to = contractToAddresses[contractName][i];
+            uint256 amount = payerBalance[contractName][to];
+            payerBalance[contractName][to] = 0;
+            address payable receiver = payable(contractToAddresses[contractName][i]);
+            receiver.transfer(amount);
+            ct.balance -= amount;
+        }
+        // console.log(ct.balance); 
     }
 }

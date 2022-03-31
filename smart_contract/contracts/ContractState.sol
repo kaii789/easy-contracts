@@ -27,6 +27,9 @@ contract ContractState {
         conditionArgNum[0] = 2;
         conditionArgNum[1] = 3;
         actionArgNum[0] = 1;
+        actionArgNum[1] = 2;
+        actionArgNum[2] = 1;
+        actionArgNum[3] = 0;
         
         // For testing purposes
         actionArgNum[200] = 2;
@@ -52,6 +55,10 @@ contract ContractState {
 
     // A mapping from contract_name => sender => amount paid.
     mapping(string => mapping(address => uint)) public payerBalance;
+
+    // We can't iterate a mapping in Solidity, so we need this workaround
+    mapping(string => address[]) internal contractToAddresses;
+    mapping(string => mapping(address => bool)) internal contractToIsAddressExist;
 
     // A mapping to `Contract` structs.
     mapping(string => Contract) internal contractStructs;
@@ -130,6 +137,11 @@ contract ContractState {
         Contract storage contractToPay = contractStructs[contractName];
 
         contractToPay.balance += msg.value;
+
+        if (contractToIsAddressExist[contractName][msg.sender] == false) {
+            contractToAddresses[contractName].push(msg.sender);
+            contractToIsAddressExist[contractName][msg.sender] = true;
+        }
         payerBalance[contractName][msg.sender] += msg.value;
     }
 }
