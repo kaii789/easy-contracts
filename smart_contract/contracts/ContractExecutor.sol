@@ -10,8 +10,9 @@ contract ContractExecutor is ContractState, ConditionExecutor {
         // This will be called by the client
         
         Contract storage ct = contractStructs[contractName];
-        executeStatement(contractName);
+        require(ct.curStatement != -1);
 
+        executeStatement(contractName);
         if (ct.curStatement == -1) {
             // TODO: End contract
         }
