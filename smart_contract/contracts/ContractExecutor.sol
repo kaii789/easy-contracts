@@ -6,6 +6,10 @@ import "./ContractState.sol";
 import "hardhat/console.sol";
 
 contract ContractExecutor is ContractState, ConditionExecutor {
+
+    // TODO: augment this with list of participating users.
+    event contractEnded(string contractName);
+
     function executeContract(string calldata contractName) public {
         // This will be called by the client
         
@@ -14,7 +18,8 @@ contract ContractExecutor is ContractState, ConditionExecutor {
 
         executeStatement(contractName);
         if (ct.curStatement == -1) {
-            // TODO: End contract
+            // Emit `contractEnded` event.
+            emit contractEnded(contractName);
         }
     }
 
