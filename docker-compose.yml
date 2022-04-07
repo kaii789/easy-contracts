@@ -1,35 +1,35 @@
 version: "3.9"
 
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    image: blocx_backend
-    container_name: blocx_backend
-    depends_on:
-      - datastore
-    environment:
-      - DEV_ENV=true
-    volumes:
-      - ${HOST_PROJECT_ROOT}/backend/:/var/app/backend/
-      - /var/app/backend/node_modules/ # this essentially ignores `node_modules/`
-      - /var/app/backend/build/ # this essentially ignores `build/`
-    ports:
-      - "3000:3000"
-    networks:
-      - app-network
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   image: blocx_backend
+  #   container_name: blocx_backend
+  #   depends_on:
+  #     - datastore
+  #   environment:
+  #     - DEV_ENV=true
+  #   volumes:
+  #     - ${HOST_PROJECT_ROOT}/backend/:/var/app/backend/
+  #     - /var/app/backend/node_modules/ # this essentially ignores `node_modules/`
+  #     - /var/app/backend/build/ # this essentially ignores `build/`
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - app-network
   
-  datastore:
-    image: mongo
-    container_name: blocx-datastore
-    volumes:
-      - database:/data/db
-      - database-config:/data/configdb
-    ports:
-      - "27017:27017"
-    networks:
-      - app-network
+  # datastore:
+  #   image: mongo
+  #   container_name: blocx-datastore
+  #   volumes:
+  #     - database:/data/db
+  #     - database-config:/data/configdb
+  #   ports:
+  #     - "27017:27017"
+  #   networks:
+  #     - app-network
 
   client:
     build:
