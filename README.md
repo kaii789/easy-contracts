@@ -76,7 +76,3 @@ This use case is rather simple. Users may have multiple contracts occuring at th
 This use case enables our users to see their contracts in our React client for bookkeeping or other similar purposes. We would likely cache user contracts on the blockchain in our data store, which our Express backend would fetch and pass to our React client for our users to see. Only thing to note, though, is that we will delete inactive/expired contract states to save gas, which means seeing past contracts will likely not be a decentralized operation (i.e. the displayed inactive contracts cannot be fully trusted as blockchain-backed).
 
 <img src="./images/use_case_5.png" height=400/>
-
-## Development
-
-See the [development document](docs/development.md).
