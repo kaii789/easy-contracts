@@ -261,5 +261,54 @@ describe("Test contract executor", function () {
 
       });
     });
+
+    describe("Test judge datetime contract", function () {
+      it("Should end contract", async function () {
+        /*
+        We start at statement 0.
+        We execute the contract and jump to statement 1 since we satisfy the condition (currentTime < 2524608000 == 2050.1.1). 
+        We execute the contract again and end the contract since we do not satisfy the condition (NOT currentTime < 1262304000 == 2010.1.1).
+        
+        We expect the contract's curStatement to be -1, which indicates the contract has ended.
+        */
+
+        // Create new contract.
+        const createContractTx = await contractState.newContract("contract_0");
+        await createContractTx.wait(); // Wait until transaction is mined.
+  
+        // Add statements.
+        const addStatementTx1 = await contractState.addStatement(
+          "contract_0",
+          [{"conditionType": 3, "strArgs": [], "intArgs": [2524608000], "addrArgs": []}],
+          [{"actionType": 0, "strArgs": [], "intArgs": [1], "addrArgs": []}],
+          [{"actionType": 0, "strArgs": [], "intArgs": [0], "addrArgs": []}]
+        );
+        await addStatementTx1.wait(); // Wait until transaction is mined.
+        const addStatementTx2 = await contractState.addStatement(
+          "contract_0",
+          [{"conditionType": 3, "strArgs": [], "intArgs": [1262304000], "addrArgs": []}],
+          [{"actionType": 0, "strArgs": [], "intArgs": [0], "addrArgs": []}],
+          [{"actionType": 0, "strArgs": [], "intArgs": [-1], "addrArgs": []}]
+        );
+        await addStatementTx2.wait(); // Wait until transaction is mined.
+
+        // Execute Contract: Jump to statement 1
+        const executeContractTx1 = await contractState.executeContract(
+            "contract_0"
+        );
+        await executeContractTx1.wait(); // Wait until transaction is mined.
+
+        // Execute Contract: End contract
+        const executeContractTx2 = await contractState.executeContract(
+            "contract_0"
+        );
+        await executeContractTx2.wait(); // Wait until transaction is mined.
+
+        // Get contract.
+        const getContractTx = await contractState.getContract("contract_0");
+        expect(getContractTx.isContract).to.be.true;
+        expect(getContractTx.curStatement).to.equal(-1);
+      });
+    });
   
   });

@@ -27,6 +27,7 @@ contract ContractState {
         conditionArgNum[0] = 2;
         conditionArgNum[1] = 3;
         conditionArgNum[2] = 1;
+        conditionArgNum[3] = 1;
         actionArgNum[0] = 1;
         actionArgNum[1] = 2;
         actionArgNum[2] = 1;

@@ -25,10 +25,19 @@ contract ConditionExecutor is ContractState, Utilities {
             return judgeUserBalance(contractName, condition);
         } else if (condition.conditionType == 2) {
             return judgeUserConfirmation(contractName, condition);
+        } else if (condition.conditionType == 3) {
+            return judgeBeforeDateTime(condition);
         } else {
             // We really shouldn't reach here.
             return false;
         }
+    }
+
+    function judgeBeforeDateTime(Condition storage condition) private view returns(bool) {
+        // NB: cast to `uint256` may cause panics when the arg is negative.
+        uint256 dateTime = uint256(condition.intArgs[0]); // as seconds after Unix epoch.
+
+        return block.timestamp < dateTime;
     }
 
     function judgeUserConfirmation(string calldata contractName, Condition storage condition) private view returns(bool) {
