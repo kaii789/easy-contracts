@@ -1,20 +1,20 @@
 .Contract {
-    margin: 50px;
-    margin-bottom: 100px;
+    margin: 10vh;
+    margin-bottom: 10vh;
 }
 
 .ContractName {
     position: absolute; 
     left: 0; 
     right: 0; 
-    top: 100px;
+    top: 5vh;
     margin-left: auto; 
     margin-right: auto;
+    border-radius: 2vh;
 }
 
 .ContractName input {
-    font-size: larger;
-    border-radius: 5px;
+    font-size: 4vh;
 }
 
 .CreateButton {
@@ -61,8 +61,10 @@
 }
 
 .UserButton input {
-    margin-left: 50px;
-    margin-right: 10px;
-    max-width: 100px;
+    margin-left: 3vh;
+    margin-right: 1vh;
+    border-width: 0.4vh;
+    width: 10vh;
+    padding: 0.5vh;
     font-size: 2vh;
 }

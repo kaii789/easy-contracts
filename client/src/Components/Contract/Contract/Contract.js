@@ -64,24 +64,22 @@ class Contract extends React.Component {
   // Upload this contract as a blockchain smart contract
   async postContract() {
     // Disable all edits
-    // this.setState({newContract: false});
+    this.setState({newContract: false});
 
-    // let success = true;
+    let success = true;
 
     try {
       const contractName = this.state.contractName;
 
-      await newContract(contractName);
+      success &= await newContract(contractName);
 
       let num_statements_added = 0;
       let queue = [this.state.statements[0]];  // Start with root statement
 
-      console.log(this.state.statements);
-
       // BFS
       while (queue.length > 0) {
         const curr_statement = queue.shift();
-        console.log(curr_statement);
+
         let conditions = []
 
         for (let j = 0; j < curr_statement.conditions.length; j++) {
@@ -153,7 +151,6 @@ class Contract extends React.Component {
           // the smart contract side of thing
           if (actionType === 0) {
             let next_cons_statement = int_args[0];
-            console.log(next_cons_statement);
             queue.push(this.state.statements[next_cons_statement]);
             int_args[0] = ++num_statements_added;
           }
@@ -213,21 +210,25 @@ class Contract extends React.Component {
           });
         }
 
-        await addStatement(contractName, conditions, consequents, alternatives);
+        success &= await addStatement(contractName, conditions, consequents, alternatives);
       }
     }
     catch (err) {
-      // success = false;
+      success = false;
       console.log(err);
-    }
-    
-    // if (!success) {
-    //   // Enable edits again since we weren't able to upload this contract, edits may be needed
-    //     this.setState({newContract: true});
-    // }
 
-    const contract = await getContract(this.state.contractName);
-    console.log(contract);
+      // Enable edits again since we weren't able to upload this contract, edits may be needed
+      this.setState({newContract: true});
+    }
+
+    if (!success) {
+      alert("Contract creation unsuccessful. Please make sure your entered all inputs correctly and chose a unique contract name. If using a test account with Metamask, make sure to reset the account. :)");
+      return;
+    }
+
+    alert("Contract " + this.state.contractName + " created successfully!");
+
+    this.printContract(this.state.contractName);
   }
 
 
@@ -250,13 +251,14 @@ class Contract extends React.Component {
   render() {
     return (
       <div className="Contract">
+        {/* Disables edits to current displayed contract */}
         <div style={this.state.newContract ? {} : {pointerEvents: "none"}}>
-          <div className="ContractName">
-            <input value={this.state.contractName} onChange={e => this.setState({contractName: e.target.value})} placeholder="Set a Contract Name..."/>
-          </div>
-
           {/* We're passing the entire collection of statements down to this "root" tile to do a recursive rendering */}
           <ContractTile id={0} newContract={this.state.newContract} statements={this.state.statements} updateStatement={this.updateStatement} getCurrId={this.getCurrId}/>
+        </div>
+
+        <div className="ContractName">
+            <input value={this.state.contractName} onChange={e => this.setState({contractName: e.target.value})} placeholder="Set a Contract Name..."/>
         </div>
 
         <button className="CreateButton" onClick={this.postContract}>Create</button>

@@ -64,8 +64,6 @@ export async function addStatement(contractName, conditions, consequents, altern
     const signer = provider.getSigner();
     const cs = new ethers.Contract(smartContractAddress, ContractState.abi, signer);
 
-    console.log(consequents);
-
     const addStatementTx = await cs.addStatement(
       contractName,
       conditions,

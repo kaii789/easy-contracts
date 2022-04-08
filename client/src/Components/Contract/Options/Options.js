@@ -2,6 +2,7 @@ export const ConditionsOptions = [
   { value: "0", label: "Contract Balance" },
   { value: "1", label: "User Balance" },
   { value: "2", label: "User Confirmation" },
+  { value: "3", label: "Before Datetime" },
 ];
 
 export const ActionsOptions = [
