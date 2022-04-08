@@ -45,7 +45,7 @@ describe("Test contract executor", function () {
         // Add statements.
         const addStatementTx1 = await contractState.addStatement(
           "contract_0",
-          [{"conditionType": 0, "strArgs": [">="], "intArgs": [ethers.utils.parseEther("5.0")], "addrArgs": []}],
+          [{"conditionType": 0, "strArgs": [">="], "intArgs": [5], "addrArgs": []}],
           [{"actionType": 0, "strArgs": [], "intArgs": [1], "addrArgs": []}],
           [{"actionType": 0, "strArgs": [], "intArgs": [0], "addrArgs": []}]
         );
@@ -102,14 +102,14 @@ describe("Test contract executor", function () {
         // Add statements.
         const addStatementTx1 = await contractState.addStatement(
           "contract_0",
-          [{"conditionType": 0, "strArgs": [">="], "intArgs": [ethers.utils.parseEther("5.0")], "addrArgs": []}],
+          [{"conditionType": 0, "strArgs": [">="], "intArgs": [5], "addrArgs": []}],
           [{"actionType": 0, "strArgs": [], "intArgs": [1], "addrArgs": []}],
           [{"actionType": 0, "strArgs": [], "intArgs": [0], "addrArgs": []}]
         );
         await addStatementTx1.wait(); // Wait until transaction is mined.
         const addStatementTx2 = await contractState.addStatement(
           "contract_0",
-          [{"conditionType": 0, "strArgs": [">"], "intArgs": [ethers.utils.parseEther("1.0")], "addrArgs": []}],
+          [{"conditionType": 0, "strArgs": [">"], "intArgs": [1], "addrArgs": []}],
           [{"actionType": 0, "strArgs": [], "intArgs": [0], "addrArgs": []}],
           []
         );
@@ -158,8 +158,8 @@ describe("Test contract executor", function () {
         // Add statements.
         const addStatementTx1 = await contractState.addStatement(
           "contract_0",
-          [{"conditionType": 0, "strArgs": [">="], "intArgs": [ethers.utils.parseEther("5.0")], "addrArgs": []}],
-          [{"actionType": 1, "strArgs": [], "intArgs": [ethers.utils.parseEther("5.0")], "addrArgs": [addr1.address]}, 
+          [{"conditionType": 0, "strArgs": [">="], "intArgs": [5], "addrArgs": []}],
+          [{"actionType": 1, "strArgs": [], "intArgs": [5], "addrArgs": [addr1.address]}, 
            {"actionType": 0, "strArgs": [], "intArgs": [1], "addrArgs": []}],
           [{"actionType": 0, "strArgs": [], "intArgs": [0], "addrArgs": []}]
         );
@@ -215,7 +215,7 @@ describe("Test contract executor", function () {
         // Add statements.
         const addStatementTx1 = await contractState.addStatement(
           "contract_0",
-          [{"conditionType": 0, "strArgs": [">="], "intArgs": [ethers.utils.parseEther("10.0")], "addrArgs": []}],
+          [{"conditionType": 0, "strArgs": [">="], "intArgs": [10], "addrArgs": []}],
           [{"actionType": 3, "strArgs": [], "intArgs": [], "addrArgs": []}, 
            {"actionType": 0, "strArgs": [], "intArgs": [1], "addrArgs": []}],
           [{"actionType": 0, "strArgs": [], "intArgs": [0], "addrArgs": []}]
@@ -225,17 +225,17 @@ describe("Test contract executor", function () {
           "contract_0",
           [{"conditionType": 0, "strArgs": ["<="], "intArgs": [0], "addrArgs": []}],
           [{"actionType": 0, "strArgs": [], "intArgs": [-1], "addrArgs": []}],
-          [{"actionType": 0, "strArgs": [], "intArgs": [1], "addrArgs": []}]
+          [{"actionType": 0, "strArgs": [], "intArgs": [-1], "addrArgs": []}]
         );
         await addStatementTx2.wait(); // Wait until transaction is mined.
         
         // const beforeBalance1 = await waffle.provider.getBalance(addr1.address);
-
+        
         // Addr1 and Addr2 each add 5 eth
         let overrides = {
-            value: ethers.utils.parseEther("5.0")
-          };
-
+          value: ethers.utils.parseEther("5.0")
+        };
+        
         await contractState.connect(addr1).payContract("contract_0", overrides);
         await contractState.connect(addr2).payContract("contract_0", overrides);
 
@@ -257,8 +257,7 @@ describe("Test contract executor", function () {
         expect(getContractTx.curStatement).to.equal(-1);
         
         // const afterBalance1 = await waffle.provider.getBalance(addr1.address);
-        // expect(beforeBalance1).to.equal(afterBalance1);
-
+        // expect(beforeBalance2).to.equal(afterBalance1);
       });
     });
 

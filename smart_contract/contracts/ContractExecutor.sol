@@ -3,7 +3,7 @@ pragma solidity 0.8.9;
 
 import "./Condition.sol";
 import "./ContractState.sol";
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 contract ContractExecutor is ContractState, ConditionExecutor {
     function executeContract(string calldata contractName) public {
@@ -55,12 +55,14 @@ contract ContractExecutor is ContractState, ConditionExecutor {
     }
 
     function payUser(string calldata contractName, address to, uint256 amount) private {
+        uint256 wei_amount = amount * 1 ether;
+        
         Contract storage ct = contractStructs[contractName];
-        require(ct.balance >= amount);
+        require(ct.balance >= wei_amount);
         
         address payable receiver = payable(to);
-        receiver.transfer(amount);
-        ct.balance -= amount;
+        receiver.transfer(wei_amount);
+        ct.balance -= wei_amount;
     }
 
     function payUserEntireBalance(string calldata contractName, address to) private {

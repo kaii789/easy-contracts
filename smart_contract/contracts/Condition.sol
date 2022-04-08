@@ -3,6 +3,7 @@ pragma solidity 0.8.9;
 
 import "./ContractState.sol";
 import "./Utilities.sol";
+import "hardhat/console.sol";
 
 contract ConditionExecutor is ContractState, Utilities {
     function judgeAllConditions(string calldata contractName) internal view returns(bool) {
@@ -48,16 +49,17 @@ contract ConditionExecutor is ContractState, Utilities {
 
     function judgeContractBalance(string calldata contractName, Condition storage condition) private view returns(bool) {
         bytes32 inequality = keccak256(bytes(condition.strArgs[0]));
+        uint256 threshold = uint256(condition.intArgs[0]) * 1 ether;
 
         if (inequality == lessThan) {
-            return contractStructs[contractName].balance < uint256(condition.intArgs[0]);
+            return contractStructs[contractName].balance < threshold;
         } else if (inequality == lessThanOrEqualTo) {
-            return contractStructs[contractName].balance <= uint256(condition.intArgs[0]);
+            return contractStructs[contractName].balance <= threshold;
         } else if (inequality == greaterThan) {
-            return contractStructs[contractName].balance > uint256(condition.intArgs[0]);
+            return contractStructs[contractName].balance > threshold;
         } else {
             require(inequality == greaterThanOrEqualTo, "Invalid argument in condition");
-            return contractStructs[contractName].balance >= uint256(condition.intArgs[0]);
+            return contractStructs[contractName].balance >= threshold;
         }
     }
 
@@ -65,16 +67,17 @@ contract ConditionExecutor is ContractState, Utilities {
         address userAddress = condition.addrArgs[0];
         uint256 userBalance = payerBalance[contractName][userAddress];
         bytes32 inequality = keccak256(bytes(condition.strArgs[0]));
+        uint256 threshold = uint256(condition.intArgs[0]) * 1 ether;
 
         if (inequality == lessThan) {
-            return userBalance < uint256(condition.intArgs[0]);
+            return userBalance < threshold;
         } else if (inequality == lessThanOrEqualTo) {
-            return userBalance <= uint256(condition.intArgs[0]);
+            return userBalance <= threshold;
         } else if (inequality == greaterThan) {
-            return userBalance > uint256(condition.intArgs[0]);
+            return userBalance > threshold;
         } else {
             require(inequality == greaterThanOrEqualTo, "Invalid argument in condition");
-            return userBalance >= uint256(condition.intArgs[0]);
+            return userBalance >= threshold;
         }
     }
 }

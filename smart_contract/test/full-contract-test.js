@@ -71,8 +71,8 @@ describe("Test full contracts for real scenarios", function () {
         // Add statements.
         const addStatementTx1 = await contractState.addStatement(
           "contract_0",
-          [{"conditionType": 1, "strArgs": [">="], "intArgs": [ethers.utils.parseEther("20.0")], "addrArgs": [addr1.address]},
-           {"conditionType": 1, "strArgs": [">="], "intArgs": [ethers.utils.parseEther("20.0")], "addrArgs": [addr2.address]}],
+          [{"conditionType": 1, "strArgs": [">="], "intArgs": [20], "addrArgs": [addr1.address]},
+           {"conditionType": 1, "strArgs": [">="], "intArgs": [20], "addrArgs": [addr2.address]}],
           [{"actionType": 0, "strArgs": [], "intArgs": [1], "addrArgs": []}],
           [{"actionType": 3, "strArgs": [], "intArgs": [], "addrArgs": []}]
         );
@@ -80,8 +80,8 @@ describe("Test full contracts for real scenarios", function () {
         const addStatementTx2 = await contractState.addStatement(
           "contract_0",
           [{"conditionType": 2, "strArgs": [], "intArgs": [], "addrArgs": [addr1.address]}],
-          [{"actionType": 1, "strArgs": [], "intArgs": [ethers.utils.parseEther("10.0")], "addrArgs": [addr1.address]},
-           {"actionType": 1, "strArgs": [], "intArgs": [ethers.utils.parseEther("30.0")], "addrArgs": [addr2.address]},
+          [{"actionType": 1, "strArgs": [], "intArgs": [10], "addrArgs": [addr1.address]},
+           {"actionType": 1, "strArgs": [], "intArgs": [30], "addrArgs": [addr2.address]},
            {"actionType": 0, "strArgs": [], "intArgs": [-1], "addrArgs": []}],
           []
         );

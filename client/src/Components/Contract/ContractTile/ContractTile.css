@@ -1,0 +1,42 @@
+.TileWrapper {
+    padding: 5px;
+
+    font-size: large;
+
+    align-items: center;
+
+    display: inline-flex;
+}
+
+.Tile {
+    margin: 10px;
+    margin-right: 80px;
+}
+
+.DropdownSelect {
+    font-size: medium;
+    color: #282c34;
+}
+
+.ArrowWrapper {
+    display: flex;
+
+    align-items: center;
+}
+
+.ArrowWrapper > div {
+    display: inline-block;
+}
+
+.SubStatementWrapper {
+    display: block;
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    width: 200px;
+    border-width: 2px;
+    border-radius: 3px;
+    border-style: solid;
+    padding: 10px;
+}
