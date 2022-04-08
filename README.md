@@ -12,7 +12,7 @@ Table of Contents
 
 ## High-Level Architecture
 
-<img src="./images/architecture-diagram-3.png" width=800/>
+<img src="./images/architecture-diagram-4.pdf" width=800/>
 
 ### Client
 
