@@ -32,10 +32,6 @@ Express server used to serve the static React client.
 
 Also acts as a gateway between the client and the Ethereum network for requesting read-only information, keeping the client as lightweight as possible.
 
-### Data Store
-
-MongoDB is used to cache server requests.
-
 ### Communication
 
 The client communicates directly with the Ethereum network for write-requests via a "Web 3 Provider" provided by Metamask. Examples include creating new contracts, or instructing the Contract Executor to progress an active contract, etc.
