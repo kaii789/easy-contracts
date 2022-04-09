@@ -37,11 +37,11 @@ jobs:
         run: npx hardhat coverage
         working-directory: smart_contract
 
-      # Upload test code coverage to CodeClimate
-      - name: Publish code coverage
-        uses: paambaati/codeclimate-action@v3.0.0
-        env:
-          CC_TEST_REPORTER_ID: 914f6eb49f22f433dee5c420ccaeedf35b7d4861b9b18e25d7f96dd7bd565bc8
-        with:
-          coverageLocations: |
-            ${{github.workspace}}/smart_contract/coverage/lcov.info:lcov
+      # # Upload test code coverage to CodeClimate
+      # - name: Publish code coverage
+      #   uses: paambaati/codeclimate-action@v3.0.0
+      #   env:
+      #     CC_TEST_REPORTER_ID: 914f6eb49f22f433dee5c420ccaeedf35b7d4861b9b18e25d7f96dd7bd565bc8
+      #   with:
+      #     coverageLocations: |
+      #       ${{github.workspace}}/smart_contract/coverage/lcov.info:lcov

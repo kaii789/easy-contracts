@@ -38,7 +38,11 @@ jobs:
         run: npm test -- --coverage --watchAll=false
         working-directory: client
 
-      # Upload test code coverage to CodeClimate
+      - name: Run code coverage for smart contract side
+        run: npx hardhat coverage
+        working-directory: smart_contract
+
+      # Upload test code coverage to CodeClimate (this also uploads smart contract side's test coverage)
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v3.0.0
         env:
@@ -46,3 +50,4 @@ jobs:
         with:
           coverageLocations: |
             ${{github.workspace}}/client/coverage/lcov.info:lcov
+            ${{github.workspace}}/smart_contract/coverage/lcov.info:lcov
