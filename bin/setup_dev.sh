@@ -6,7 +6,7 @@
 
 echo "=== Bringing up development network ==="
 # Install node modules (if necessary)
-pushd smart_contract && npm install --silent
+pushd smart_contract && npm install --unsafe-perm=true --allow-root
 # Bring up `hardhat` development network
 npx hardhat node &
 
