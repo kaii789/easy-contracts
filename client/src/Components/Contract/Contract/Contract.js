@@ -32,6 +32,8 @@ class Contract extends React.Component {
     this.updateStatement = this.updateStatement.bind(this);
     this.postContract = this.postContract.bind(this);
     this.progressContract = this.progressContract.bind(this);
+    this.parseSubstatements = this.parseSubstatements.bind(this);
+    this.parseArgs = this.parseArgs.bind(this);
   };
 
 
@@ -61,6 +63,63 @@ class Contract extends React.Component {
   }
 
 
+  parseArgs(substatement, arg) {
+    let result = [];
+
+    if (substatement[arg] !== null && substatement[arg] !== undefined) {
+      result = substatement[arg].split(",").map(e => {
+        switch(arg) {
+          case "addrArgs":
+            return e.trim().toLowerCase();
+          case "intArgs":
+            return parseInt(e.trim());
+          default:
+            return e.trim();
+        }
+      });
+    }
+
+    return result;
+  }
+
+  parseSubstatements(curr_statement, substatement, num_statements_added) {
+    let result = [];
+
+    let jump_idx = -1;
+
+    for (let j = 0; j < curr_statement[substatement].length; j++) {
+      if (Object.keys(curr_statement[substatement][j]).length === 0  || !curr_statement[substatement][j].selected_option) {
+        continue;
+      }
+
+      let type = parseInt(curr_statement[substatement][j].selected_option.value);
+
+      let str_args = this.parseArgs(curr_statement[substatement][j], "strArgs");
+
+      let int_args = this.parseArgs(curr_statement[substatement][j], "intArgs");
+
+      let addr_args = this.parseArgs(curr_statement[substatement][j], "addrArgs");
+
+      // Jump workaround
+      if (substatement !== "conditions" && type === 0) {
+        jump_idx = int_args[0];
+        int_args[0] = num_statements_added+1;  // change arg to actual statement index
+      }
+
+      let new_substatement = {"strArgs": str_args, "intArgs": int_args, "addrArgs": addr_args};
+
+      let key = substatement === "conditions" ? "conditionType" : "actionType";
+      let val = type;
+
+      new_substatement[key] = val;
+
+      result.push(new_substatement);
+    }
+
+    return [result, jump_idx];
+  }
+
+
   // Upload this contract as a blockchain smart contract
   async postContract() {
     // Disable all edits
@@ -80,134 +139,27 @@ class Contract extends React.Component {
       while (queue.length > 0) {
         const curr_statement = queue.shift();
 
-        let conditions = []
+        let conditions = this.parseSubstatements(curr_statement, "conditions", num_statements_added)[0];
 
-        for (let j = 0; j < curr_statement.conditions.length; j++) {
-          if (Object.keys(curr_statement.conditions[j]).length === 0  || !curr_statement.conditions[j].selected_option) {
-            break;
-          }
+        let parsedConsequents = this.parseSubstatements(curr_statement, "consequents", num_statements_added);
 
-          let str_args = []
-          if (curr_statement.conditions[j].strArgs !== null && curr_statement.conditions[j].strArgs !== undefined) {
-              str_args = curr_statement.conditions[j].strArgs.split(",").map(e => {
-                return e.trim();
-              });
-          }
+        let consequents = parsedConsequents[0];
 
-          let int_args = []
-          if (curr_statement.conditions[j].intArgs !== null && curr_statement.conditions[j].intArgs !== undefined) {
-              int_args = curr_statement.conditions[j].intArgs.split(",").map(e => {
-                return parseInt(e.trim());
-              });
-          }
-
-          let addr_args = []
-          if (curr_statement.conditions[j].addrArgs !== null && curr_statement.conditions[j].addrArgs !== undefined) {
-              addr_args = curr_statement.conditions[j].addrArgs.split(",").map(e => {
-                return e.trim().toLowerCase();
-              });
-          }
-
-          conditions.push({
-            "conditionType": parseInt(curr_statement.conditions[j].selected_option.value), 
-            "strArgs": str_args,
-            "intArgs": int_args,
-            "addrArgs": addr_args
-          });
+        // If jump, make sure we're jumping to the correct statement number
+        // This workaround can be circumvented by adding an id field for statements on 
+        // the smart contract side of thing
+        if (parsedConsequents[1] !== -1) {
+          queue.push(this.state.statements[parsedConsequents[1]]);
+          num_statements_added++;
         }
 
-        let consequents = []
+        let parsedAlternatives = this.parseSubstatements(curr_statement, "alternatives", num_statements_added);
 
-        for (let j = 0; j < curr_statement.consequents.length; j++) {
-          if (Object.keys(curr_statement.consequents[j]).length === 0  || !curr_statement.consequents[j].selected_option) {
-            break;
-          }
+        let alternatives = parsedAlternatives[0];
 
-          let actionType = parseInt(curr_statement.consequents[j].selected_option.value);
-
-          let str_args = []
-          if (curr_statement.consequents[j].strArgs !== null && curr_statement.consequents[j].strArgs !== undefined) {
-              str_args = curr_statement.consequents[j].strArgs.split(",").map(e => {
-                return e.trim();
-              });
-          }
-
-          let int_args = []
-          if (curr_statement.consequents[j].intArgs !== null && curr_statement.consequents[j].intArgs !== undefined) {
-              int_args = curr_statement.consequents[j].intArgs.split(",").map(e => {
-                return parseInt(e.trim());
-              });
-          }
-
-          let addr_args = []
-          if (curr_statement.consequents[j].addrArgs !== null  && curr_statement.consequents[j].addrArgs !== undefined) {
-              addr_args = curr_statement.consequents[j].addrArgs.split(",").map(e => {
-                return e.trim().toLowerCase();
-              });
-          }
-
-          // If jump, make sure we're jumping to the correct statement number
-          // This workaround can be circumvented by adding an id field for statements on 
-          // the smart contract side of thing
-          if (actionType === 0) {
-            let next_cons_statement = int_args[0];
-            queue.push(this.state.statements[next_cons_statement]);
-            int_args[0] = ++num_statements_added;
-          }
-
-          consequents.push({
-            "actionType": actionType, 
-            "strArgs": str_args,
-            "intArgs": int_args,
-            "addrArgs": addr_args
-          });
-        }
-
-        let alternatives = []
-
-        for (let j = 0; j < curr_statement.alternatives.length; j++) {
-          if (Object.keys(curr_statement.alternatives[j]).length === 0 || !curr_statement.alternatives[j].selected_option) {
-            break;
-          }
-
-          let actionType = parseInt(curr_statement.alternatives[j].selected_option.value);
-
-          let str_args = []
-          if (curr_statement.alternatives[j].strArgs !== null  && curr_statement.alternatives[j].strArgs !== undefined) {
-              str_args = curr_statement.alternatives[j].strArgs.split(",").map(e => {
-                return e.trim();
-              });
-          }
-
-          let int_args = []
-          if (curr_statement.alternatives[j].intArgs !== null && curr_statement.alternatives[j].intArgs !== undefined) {
-              int_args = curr_statement.alternatives[j].intArgs.split(",").map(e => {
-                return parseInt(e.trim());
-              });
-          }
-
-          let addr_args = []
-          if (curr_statement.alternatives[j].addrArgs !== null && curr_statement.alternatives[j].addrArgs !== undefined) {
-              addr_args = curr_statement.alternatives[j].addrArgs.split(",").map(e => {
-                return e.trim().toLowerCase();
-              });
-          }
-
-          // If jump, make sure we're jumping to the correct statement number
-          // This workaround can be circumvented by adding an id field for statements on 
-          // the smart contract side of thing
-          if (actionType === 0) {
-            let next_alt_statement = int_args[0];
-            queue.push(this.state.statements[next_alt_statement]);
-            int_args[0] = ++num_statements_added;
-          }
-
-          alternatives.push({
-            "actionType": actionType, 
-            "strArgs": str_args,
-            "intArgs": int_args,
-            "addrArgs": addr_args
-          });
+        if (parsedAlternatives[1] !== -1) {
+          queue.push(this.state.statements[parsedAlternatives[1]]);
+          num_statements_added++;
         }
 
         success &= await addStatement(contractName, conditions, consequents, alternatives);
