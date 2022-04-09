@@ -168,13 +168,14 @@ class Contract extends React.Component {
     catch (err) {
       success = false;
       console.log(err);
-
-      // Enable edits again since we weren't able to upload this contract, edits may be needed
-      this.setState({newContract: true});
     }
 
     if (!success) {
+      // Enable edits again since we weren't able to upload this contract, edits may be needed
+      this.setState({newContract: true});
+
       alert("Contract creation unsuccessful. Please make sure your entered all inputs correctly and chose a unique contract name. If using a test account with Metamask, make sure to reset the account. :)");
+      
       return;
     }
 
