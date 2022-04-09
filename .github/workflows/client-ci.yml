@@ -35,5 +35,16 @@ jobs:
         working-directory: smart_contract
 
       - name: Run unit tests
-        run: npm test -- --watchAll=false
+        run: npm test -- --coverage --watchAll=false
         working-directory: client
+
+      # Upload test code coverage to CodeClimate
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: 914f6eb49f22f433dee5c420ccaeedf35b7d4861b9b18e25d7f96dd7bd565bc8
+        with:
+          coverageLocations: |
+            ${{github.workspace}}/client/coverage/lcov.info:lcov
+          prefix:
+            ${{github.workspace}}/client/
