@@ -1,5 +1,3 @@
-import "./Substatement.css";
-
 import React from "react";
 import { default as ReactSelect } from "react-select";
 import {ConditionsOptions, ActionsOptions } from "../Options/Options.js";

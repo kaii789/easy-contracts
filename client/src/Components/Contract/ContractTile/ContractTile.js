@@ -1,7 +1,7 @@
 import "./ContractTile.css";
 
 import React from "react";
-import { green_angled_arrow, green_straight_arrow, red_angled_arrow, red_straight_arrow } from "../Arrows/Arrows";
+import Arrow from "../Arrow/Arrow";
 import Substatement from "../Substatement/Substatement";
 
 function getJumpId(actions) {
@@ -41,7 +41,7 @@ class ContractTile extends React.Component {
       return (
         <div className="TileWrapper" style={this.props.newContract ? {} : {pointerEvents: "none"}}>
           <div className="Tile">
-            <div>
+            <div className="SubStatementWrapper">
               Statement <b>{this.props.id}</b>
             </div>
             
@@ -52,8 +52,8 @@ class ContractTile extends React.Component {
               <Substatement text="Then" borderColor="rgba(0, 255, 0, 0.5)" statements={this.props.statements} id={this.props.id} substatementType="consequents" updateStatement={this.props.updateStatement} getCurrId={this.props.getCurrId} jumpId={cons_jump_id}/>
 
               <div>
-                  {show_green_straight_arrow && green_straight_arrow}
-                  {show_green_angled_arrow && green_angled_arrow}
+                  {show_green_straight_arrow && <Arrow color="green" x1="0" y1="50" x2="90" y2="50"/>}
+                  {show_green_angled_arrow && <Arrow color="green" x1="0" y1="50" x2="50" y2="5"/>}
               </div>
             </div>
           
@@ -61,8 +61,8 @@ class ContractTile extends React.Component {
               <Substatement text="Else" borderColor="rgba(255, 0, 0, 0.6)" statements={this.props.statements} id={this.props.id} substatementType="alternatives" updateStatement={this.props.updateStatement} getCurrId={this.props.getCurrId} jumpId={alt_jump_id}/>
 
               <div>
-                  {show_red_straight_arrow && red_straight_arrow}
-                  {show_red_angled_arrow && red_angled_arrow}
+                  {show_red_straight_arrow && <Arrow color="red" x1="0" y1="50" x2="90" y2="50"/>}
+                  {show_red_angled_arrow && <Arrow color="red" x1="0" y1="50" x2="50" y2="95"/>}
               </div>
             </div>
           </div>
