@@ -27,16 +27,3 @@
 .ArrowWrapper > div {
     display: inline-block;
 }
-
-.SubStatementWrapper {
-    display: block;
-
-    margin-top: 10px;
-    margin-bottom: 10px;
-
-    width: 200px;
-    border-width: 2px;
-    border-radius: 3px;
-    border-style: solid;
-    padding: 10px;
-}
