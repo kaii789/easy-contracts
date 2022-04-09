@@ -4,6 +4,9 @@
 # All components are containerized with the exception of smart contract-related
 # steps (i.e. bringing up a development network and deploying the contract).
 
+# Fix ownership issue
+sudo chown root -R *
+
 echo "=== Bringing up development network ==="
 # Install node modules (if necessary)
 pushd smart_contract && npm install --unsafe-perm=true --allow-root
