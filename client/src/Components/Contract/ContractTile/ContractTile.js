@@ -51,7 +51,9 @@ class ContractTile extends React.Component {
         new_statement.consequents[new_statement.consequents.length - 1].selected_option = null;  // must update this for some reason for dropdown to update correctly
 
         if (removed_consequent.selected_option.label === "Jump") {
-          this.setState({consequentsActionsOptions: this.state.consequentsActionsOptions.unshift({value: "0", label: "Jump"})});
+          let new_options = this.state.consequentsActionsOptions;
+          new_options.unshift({value: "0", label: "Jump"});  // Restore jump option
+          this.setState({consequentsActionsOptions: new_options});
         }
       }
       // Otherwise set current selection and add new empty field 
@@ -84,7 +86,9 @@ class ContractTile extends React.Component {
 
         // Restore Jump as an option
         if (removed_alternative.selected_option.label === "Jump") {
-          this.setState({alternativesActionsOptions: this.state.alternativesActionsOptions.unshift({value: "0", label: "Jump"})});
+          let new_options = this.state.alternativesActionsOptions;
+          new_options.unshift({value: "0", label: "Jump"});  // Restore jump option
+          this.setState({alternativesActionsOptions: new_options});
         }
       }
       // Otherwise set current selection and add new empty field 
