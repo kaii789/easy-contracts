@@ -119,68 +119,53 @@ class Contract extends React.Component {
     return [result, jump_idx];
   }
 
+  async bfsAddStatement(queue, contractName) {
+    // BFS
+    let num_statements_added = 0;
+    while (queue.length > 0) {
+      const curr_statement = queue.shift();
+      let conditions = this.parseSubstatements(curr_statement, "conditions", num_statements_added)[0];
+      let parsedConsequents = this.parseSubstatements(curr_statement, "consequents", num_statements_added);
+      let consequents = parsedConsequents[0];
+      // If jump, make sure we're jumping to the correct statement number
+      // This workaround can be circumvented by adding an id field for statements on 
+      // the smart contract side of thing
+      if (parsedConsequents[1] !== -1) {
+        queue.push(this.state.statements[parsedConsequents[1]]);
+        num_statements_added++;
+      }
+      let parsedAlternatives = this.parseSubstatements(curr_statement, "alternatives", num_statements_added);
+      let alternatives = parsedAlternatives[0];
+      if (parsedAlternatives[1] !== -1) {
+        queue.push(this.state.statements[parsedAlternatives[1]]);
+        num_statements_added++;
+      }
+      return await addStatement(contractName, conditions, consequents, alternatives);
+    }
+  }
 
   // Upload this contract as a blockchain smart contract
   async postContract() {
-    // Disable all edits
-    this.setState({newContract: false});
-
+    this.setState({newContract: false}); // Disable all edits
     let success = true;
 
     try {
       const contractName = this.state.contractName;
-
       success &= await newContract(contractName);
-
-      let num_statements_added = 0;
       let queue = [this.state.statements[0]];  // Start with root statement
-
-      // BFS
-      while (queue.length > 0) {
-        const curr_statement = queue.shift();
-
-        let conditions = this.parseSubstatements(curr_statement, "conditions", num_statements_added)[0];
-
-        let parsedConsequents = this.parseSubstatements(curr_statement, "consequents", num_statements_added);
-
-        let consequents = parsedConsequents[0];
-
-        // If jump, make sure we're jumping to the correct statement number
-        // This workaround can be circumvented by adding an id field for statements on 
-        // the smart contract side of thing
-        if (parsedConsequents[1] !== -1) {
-          queue.push(this.state.statements[parsedConsequents[1]]);
-          num_statements_added++;
-        }
-
-        let parsedAlternatives = this.parseSubstatements(curr_statement, "alternatives", num_statements_added);
-
-        let alternatives = parsedAlternatives[0];
-
-        if (parsedAlternatives[1] !== -1) {
-          queue.push(this.state.statements[parsedAlternatives[1]]);
-          num_statements_added++;
-        }
-
-        success &= await addStatement(contractName, conditions, consequents, alternatives);
-      }
+      success &= await this.bfsAddStatement(queue, contractName);
     }
     catch (err) {
       success = false;
       console.log(err);
     }
-
     if (!success) {
       // Enable edits again since we weren't able to upload this contract, edits may be needed
       this.setState({newContract: true});
-
       alert("Contract creation unsuccessful. Please make sure your entered all inputs correctly and chose a unique contract name. If using a test account with Metamask, make sure to reset the account. :)");
-      
       return;
     }
-
     alert("Contract " + this.state.contractName + " created successfully!");
-
     this.printContract(this.state.contractName);
   }
 
