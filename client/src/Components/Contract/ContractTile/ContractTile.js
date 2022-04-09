@@ -4,30 +4,27 @@ import React from "react";
 import { green_angled_arrow, green_straight_arrow, red_angled_arrow, red_straight_arrow } from "../Arrows/Arrows";
 import Substatement from "../Substatement/Substatement";
 
+function getJumpId(actions) {
+  let ret = -1;
+  actions.forEach(action => {
+    if(action.selected_option && action.selected_option.label === "Jump") {
+      ret = parseInt(action.intArgs);
+    }
+  });
+  return ret
+}
 
 class ContractTile extends React.Component {    
 
     render() {
 
-      let cons_jump_id = -1;
-      
-      this.props.statements[this.props.id].consequents.forEach(e => {
-        if(e.selected_option && e.selected_option.label === "Jump") {
-          cons_jump_id = parseInt(e.intArgs);
-        }
-      });
+      let cons_jump_id = getJumpId(this.props.statements[this.props.id].consequents);
 
       let show_green_straight_arrow = cons_jump_id !== -1;
       let show_green_angled_arrow = false;
 
 
-      let alt_jump_id = -1;
-      
-      this.props.statements[this.props.id].alternatives.forEach((e, i) => {
-        if(e.selected_option && e.selected_option.label === "Jump") {
-          alt_jump_id = parseInt(e.intArgs);
-        }
-      });
+      let alt_jump_id = getJumpId(this.props.statements[this.props.id].alternatives);
      
       let show_red_straight_arrow = alt_jump_id !== -1;
       let show_red_angled_arrow = false;
