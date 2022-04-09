@@ -1,9 +1,9 @@
-name: Client CI
+name: Upload Test Coverage
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on pull request events but only for the main branch
-  pull_request:
+  push:
     branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -37,3 +37,17 @@ jobs:
       - name: Run unit tests
         run: npm test -- --coverage --watchAll=false
         working-directory: client
+
+      - name: Run code coverage for smart contract side
+        run: npx hardhat coverage
+        working-directory: smart_contract
+
+      # Upload test code coverage to CodeClimate (this also uploads smart contract side's test coverage)
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: 914f6eb49f22f433dee5c420ccaeedf35b7d4861b9b18e25d7f96dd7bd565bc8
+        with:
+          coverageLocations: |
+            ${{github.workspace}}/client/coverage/lcov.info:lcov
+            ${{github.workspace}}/smart_contract/coverage/lcov.info:lcov
