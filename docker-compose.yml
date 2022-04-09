@@ -37,8 +37,8 @@ services:
       dockerfile: Dockerfile
     image: blocx_client
     container_name: blocx_client
-    depends_on:
-      - backend
+    # depends_on:
+    #   - backend
     environment:
       - CHOKIDAR_USEPOLLING=true # For React development server hot-reloading
       - PORT=5001
