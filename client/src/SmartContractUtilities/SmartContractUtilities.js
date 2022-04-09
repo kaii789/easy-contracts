@@ -8,22 +8,22 @@ import ContractState from '../contract_artifacts/contracts/Condition.sol/Conditi
 const smartContractAddress = process.env.REACT_APP_CONTRACT_ACCOUNT;
     
 
-// request access to the user's MetaMask account
-async function requestAccount() {
+// Get contract instance based on abi.
+async function getContractAbi(abi) {
   if (typeof window.ethereum === 'undefined') {
     window.ethereum.enable();
     await window.ethereum.request({ method: 'eth_requestAccounts' });
   }
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const cs = new ethers.Contract(smartContractAddress, abi, signer);
+  return cs
 }
 
 
 export async function newContract(contractName) {  
   try {
-    await requestAccount();
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const cs = new ethers.Contract(smartContractAddress, ContractState.abi, signer);
+    const cs = await getContractAbi(ContractState.abi);
 
     const createContractTx = await cs.newContract(contractName);
 
@@ -39,11 +39,7 @@ export async function newContract(contractName) {
 
 export async function getContract(contractName) {
   try {
-    await requestAccount();
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const cs = new ethers.Contract(smartContractAddress, ContractState.abi, signer);
+    const cs = await getContractAbi(ContractState.abi);
 
     let res = await cs.getContract(contractName);
 
@@ -58,11 +54,7 @@ export async function getContract(contractName) {
 
 export async function addStatement(contractName, conditions, consequents, alternatives) {
   try {
-    await requestAccount();
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const cs = new ethers.Contract(smartContractAddress, ContractState.abi, signer);
+    const cs = await getContractAbi(ContractState.abi);
 
     const addStatementTx = await cs.addStatement(
       contractName,
@@ -84,11 +76,7 @@ export async function addStatement(contractName, conditions, consequents, altern
 
 export async function userConfirm(contractName) {
   try {
-    await requestAccount();
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const cs = new ethers.Contract(smartContractAddress, ContractState.abi, signer);
+    const cs = await getContractAbi(ContractState.abi);
 
     const userConfirmTx = await cs.userConfirm(contractName);
 
@@ -105,11 +93,7 @@ export async function userConfirm(contractName) {
 
 export async function userDeny(contractName) {
   try {
-    await requestAccount();
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const cs = new ethers.Contract(smartContractAddress, ContractState.abi, signer);
+    const cs = await getContractAbi(ContractState.abi);
 
     const userDenyTx = await cs.userDeny(contractName);
 
@@ -126,13 +110,9 @@ export async function userDeny(contractName) {
 
 export async function executeContract(contractName) {
   try {
-    await requestAccount();
+    const cs = await getContractAbi(ContractExecutor.abi);
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const cx = new ethers.Contract(smartContractAddress, ContractExecutor.abi, signer);
-
-    const executeContractTx = await cx.executeContract(contractName);
+    const executeContractTx = await cs.executeContract(contractName);
 
     await executeContractTx.wait();  // Wait for it to get mined
   }
@@ -147,11 +127,7 @@ export async function executeContract(contractName) {
 
 export async function payContract(contractName, value) {
   try {
-    await requestAccount();
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const cs = new ethers.Contract(smartContractAddress, ContractState.abi, signer);
+    const cs = await getContractAbi(ContractState.abi);
 
     const executeContractTx = await cs.payContract(contractName);
 
@@ -159,6 +135,8 @@ export async function payContract(contractName, value) {
     const overrides = {
       value: ethers.utils.parseEther(String(value))
     };
+
+    const signer = new ethers.providers.Web3Provider(window.ethereum).getSigner();
 
     await cs.connect(signer).payContract(contractName, overrides);
 
