@@ -16,7 +16,7 @@ commands:
   bootstrap: bin/bootstrap
   database:
     create: echo "No database here!"
-    delete: echo "Everything in on the blockchain!"
+    delete: echo "Everything is on the blockchain!"
   server: docker-compose up backend
   test:
     frontend: cd ./client && npm test
