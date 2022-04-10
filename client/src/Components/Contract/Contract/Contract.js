@@ -122,6 +122,8 @@ class Contract extends React.Component {
   async bfsAddStatement(queue, contractName) {
     // BFS
     let num_statements_added = 0;
+    let success = true;
+
     while (queue.length > 0) {
       const curr_statement = queue.shift();
       let conditions = this.parseSubstatements(curr_statement, "conditions", num_statements_added)[0];
@@ -140,8 +142,10 @@ class Contract extends React.Component {
         queue.push(this.state.statements[parsedAlternatives[1]]);
         num_statements_added++;
       }
-      return await addStatement(contractName, conditions, consequents, alternatives);
+      success &= await addStatement(contractName, conditions, consequents, alternatives);
     }
+
+    return success;
   }
 
   // Upload this contract as a blockchain smart contract

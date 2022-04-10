@@ -71,7 +71,7 @@ class Substatement extends React.Component {
                 {i !== 0 && "and"}
                 <ReactSelect
                   className="DropdownSelect"
-                  options={this.props.substatementType === "conditions" ? ConditionsOptions : ActionsOptions}
+                  options={this.props.substatementType === "conditions" ? ConditionsOptions : this.state.actionsOptions}
                   closeMenuOnSelect={true}
                   onChange={(selected) => {this.handleSelectedChange(this.props.substatementType, i, selected)}}
                   isClearable={true}

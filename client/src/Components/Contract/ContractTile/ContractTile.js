@@ -14,77 +14,70 @@ function getJumpId(actions) {
   return ret
 }
 
-class ContractTile extends React.Component {    
 
-    render() {
+class ContractTile extends React.Component {
+  constructor(props) {
+    super(props);
 
-      let cons_jump_id = getJumpId(this.props.statements[this.props.id].consequents);
+    this.jumpIds = [-1, -1, -1];
+    this.arrows = [null, null, null];
+    this.substatementTypes = ["conditions", "consequents", "alternatives"];
+    this.texts = ["If", "Then", "Else"];
+    this.colors = ["rgba(0, 128, 255, 0.6)", "rgba(0, 255, 0, 0.5)", "rgba(255, 0, 0, 0.6)"];
 
-      let show_green_straight_arrow = cons_jump_id !== -1;
-      let show_green_angled_arrow = false;
-
-
-      let alt_jump_id = getJumpId(this.props.statements[this.props.id].alternatives);
-     
-      let show_red_straight_arrow = alt_jump_id !== -1;
-      let show_red_angled_arrow = false;
-
-      if (show_green_straight_arrow && show_red_straight_arrow) {
-        show_green_straight_arrow = false;
-        show_red_straight_arrow = false;
-
-        show_green_angled_arrow = true;
-        show_red_angled_arrow = true;
-      }
+    this.setJumpsAndArrows = this.setJumpsAndArrows.bind(this);
+  };
 
 
-      return (
-        <div className="TileWrapper" style={this.props.newContract ? {} : {pointerEvents: "none"}}>
-          <div className="Tile">
-            <div className="SubStatementWrapper">
-              Statement <b>{this.props.id}</b>
-            </div>
-            
-            <Substatement text="If" borderColor="rgba(0, 128, 255, 0.6)" statements={this.props.statements} id={this.props.id} substatementType="conditions" updateStatement={this.props.updateStatement} getCurrId={this.props.getCurrId}/>
-            
-            
-            <div className="ArrowWrapper">
-              <Substatement text="Then" borderColor="rgba(0, 255, 0, 0.5)" statements={this.props.statements} id={this.props.id} substatementType="consequents" updateStatement={this.props.updateStatement} getCurrId={this.props.getCurrId} jumpId={cons_jump_id}/>
+  setJumpsAndArrows() {
+    let cons_jump_id = getJumpId(this.props.statements[this.props.id].consequents);
+    let alt_jump_id = getJumpId(this.props.statements[this.props.id].alternatives);
 
-              <div>
-                  {show_green_straight_arrow && <Arrow color="green" x1="0" y1="50" x2="90" y2="50"/>}
-                  {show_green_angled_arrow && <Arrow color="green" x1="0" y1="50" x2="50" y2="5"/>}
-              </div>
-            </div>
-          
-            <div className="ArrowWrapper">
-              <Substatement text="Else" borderColor="rgba(255, 0, 0, 0.6)" statements={this.props.statements} id={this.props.id} substatementType="alternatives" updateStatement={this.props.updateStatement} getCurrId={this.props.getCurrId} jumpId={alt_jump_id}/>
+    this.jumpIds = [-1, cons_jump_id, alt_jump_id];
 
-              <div>
-                  {show_red_straight_arrow && <Arrow color="red" x1="0" y1="50" x2="90" y2="50"/>}
-                  {show_red_angled_arrow && <Arrow color="red" x1="0" y1="50" x2="50" y2="95"/>}
-              </div>
-            </div>
-          </div>
 
-          <div>
-            <div style={{display: "flex", alignItems: "left"}}>
-              {
-                cons_jump_id !== -1 &&
-                <ContractTile id={cons_jump_id} newContract={this.props.newContract} statements={this.props.statements} updateStatement={this.props.updateStatement} getCurrId={this.props.getCurrId}/>
-              }
-            </div>
-            
-            <div style={{display: "flex", alignItems: "left"}}>
-              {
-                alt_jump_id !== -1 &&
-                <ContractTile id={alt_jump_id} newContract={this.props.newContract} statements={this.props.statements} updateStatement={this.props.updateStatement} getCurrId={this.props.getCurrId}/>
-              }
-            </div>
-          </div>
-        </div>
-      );
+    this.arrows = [null, null, null];
+  
+    if (cons_jump_id !== -1 && alt_jump_id !== -1) {
+      this.arrows[1] = <Arrow key={1} color="green" x1="0" y1="50" x2="50" y2="5"/>;
+      this.arrows[2] = <Arrow key={2} color="red" x1="0" y1="50" x2="50" y2="95"/>;
+    } else if (cons_jump_id !== -1) {
+      this.arrows[1] = <Arrow key={1} color="green" x1="0" y1="50" x2="90" y2="50"/>;
+    } else if (alt_jump_id !== -1) {
+      this.arrows[2] = <Arrow key={2} color="red" x1="0" y1="50" x2="90" y2="50"/>;
     }
   }
-  
-export default ContractTile;
+
+
+  render() {
+    this.setJumpsAndArrows();
+
+    let substatements = [];
+    for (let i = 0; i < 3; i++) {
+      substatements.push(
+        <div key={i} className="ArrowWrapper">
+          <Substatement text={this.texts[i]} borderColor={this.colors[i]} statements={this.props.statements} id={this.props.id} substatementType={this.substatementTypes[i]} updateStatement={this.props.updateStatement} getCurrId={this.props.getCurrId} jumpId={this.jumpIds[i]}/>
+          <div>{this.arrows[i]}</div>
+        </div>
+    );}
+
+    let child_tiles = [];
+    for (let i = 1; i < 3; i++) {
+      child_tiles.push(
+        <div key={i} style={{display: "flex", alignItems: "left"}}>
+          {this.jumpIds[i] !== -1 &&
+          <ContractTile id={this.jumpIds[i]} newContract={this.props.newContract} statements={this.props.statements} updateStatement={this.props.updateStatement} getCurrId={this.props.getCurrId}/>}
+        </div>
+    );}
+
+    return (
+      <div className="TileWrapper" style={this.props.newContract ? {} : {pointerEvents: "none"}}>
+        <div className="Tile">
+          <div className="SubStatementWrapper">Statement <b>{this.props.id}</b></div>
+          {substatements}
+        </div>
+        <div>{child_tiles}</div>
+      </div>
+    );
+  }
+} export default ContractTile;
